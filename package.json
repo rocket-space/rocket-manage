@@ -1,0 +1,36 @@
+{
+  "name": "rocket-portal",
+  "version": "1.0.0",
+  "description": "rocket-portal，管理项目本身的配置",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rocket-space/rocket-portal.git"
+  },
+  "keywords": [
+    "rocket",
+    "portal"
+  ],
+  "author": "zeromike",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rocket-space/rocket-portal/issues"
+  },
+  "homepage": "https://github.com/rocket-space/rocket-portal#readme",
+  "devDependencies": {
+    "babel-preset-env": "^1.6.0",
+    "express-handlebars": "^3.0.0",
+    "markdown": "^0.5.0",
+    "nodemon": "^1.12.0"
+  },
+  "dependencies": {
+    "babel-register": "^6.26.0",
+    "body-parser": "^1.18.1",
+    "express": "^4.15.4",
+    "lodash": "^4.17.4",
+    "npm-check-updates": "^2.12.1"
+  }
+}
