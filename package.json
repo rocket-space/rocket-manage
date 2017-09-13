@@ -1,6 +1,6 @@
 {
   "name": "rocket-portal",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "rocket-portal，管理项目本身的配置",
   "main": "index.js",
   "scripts": {
@@ -21,12 +21,12 @@
   },
   "homepage": "https://github.com/rocket-space/rocket-portal#readme",
   "devDependencies": {
-    "babel-preset-env": "^1.6.0",
-    "express-handlebars": "^3.0.0",
-    "markdown": "^0.5.0",
     "nodemon": "^1.12.0"
   },
   "dependencies": {
+    "babel-preset-env": "^1.6.0",
+    "express-handlebars": "^3.0.0",
+    "markdown": "^0.5.0",
     "babel-register": "^6.26.0",
     "body-parser": "^1.18.1",
     "express": "^4.15.4",
