@@ -10,13 +10,19 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 var exphbs  = require('express-handlebars');
 const _ = require('lodash');
-const markdown = require('markdown').markdown;
+const marked = require('marked');
 
 module.exports = function (express, app, opts) {
 
     var packageFile = opts.packageFile;
     var buildFile = opts.buildEnvPath;
     var readme = path.resolve(opts.root, './readme.html');
+
+    marked.setOptions({
+        highlight: function (code) {
+            return require('highlight.js').highlightAuto(code).value;
+        }
+    });
 
     app.engine('handlebars', exphbs());
     app.set('view engine', 'handlebars');
@@ -32,7 +38,7 @@ module.exports = function (express, app, opts) {
         var fileContent;
         try {
             fileContent = fs.readFileSync(opts.projectDescription, 'utf8');
-            fileContent = markdown.toHTML(fileContent);
+            fileContent = marked(fileContent);
             fs.writeFileSync(readme, fileContent);
         } catch (e) {
             throw new Error(e);
