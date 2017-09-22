@@ -1,6 +1,6 @@
 {
   "name": "rocket-portal",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "rocket-portal，管理项目本身的配置",
   "main": "index.js",
   "scripts": {
