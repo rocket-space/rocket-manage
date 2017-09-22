@@ -55,7 +55,7 @@ $(function () {
         }
     });
     new GMP({
-        el: '#packageUl',
+        el: '#packagePanel',
         events: {
             'click #upgrade': 'onUpgrade',
             'click #checkAll': 'onCheckAll'
