@@ -3,7 +3,6 @@
   "version": "1.1.0",
   "description": "",
   "author": "zeromike",
-  "private": true,
   "scripts": {
     "start": "./node_modules/.bin/nodemon app.js",
     "lcdev": "./node_modules/.bin/nodemon build/app.babel.server.js --env=localdev",
