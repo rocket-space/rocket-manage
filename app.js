@@ -1,7 +1,6 @@
 /**
  *
- Created by zhangzhao on 2017/9/11.
- Email: zhangzhao@gomeplus.com
+ Created by zhangzhao on 2017/10/10.
  */
 const http = require('http');
 const path = require('path');
@@ -12,8 +11,8 @@ const middleWare = require('./middleware/middleware');
 middleWare(express, app, {
     root: __dirname,
     projectDescription: path.resolve(__dirname, './README.md'),
-    pagePath: path.resolve(__dirname, './view/index.html'),
-    buildEnvPath: path.resolve(__dirname, './buildEnv.json'),
+    pagePath: path.resolve(__dirname, './dist/index.html'),
+    buildEnvPath: path.resolve(__dirname, './config/buildEnv.json'),
     packageFile: path.resolve(__dirname, './package.json')
 });
 

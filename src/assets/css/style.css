@@ -1,7 +1,41 @@
 .tabpane{
     display: none;
 }
-
+.back-top{
+    display: none;
+    background: #d0cecd;
+    position: fixed;
+    right: 100px;
+    bottom: 200px;
+    height: 50px;
+    width: 50px;
+    border-radius: 100px;
+    border: 1px solid #fff;
+    opacity: 0.6;
+    cursor: pointer;
+}
+.back-top:after {
+    content: "\21EA";
+    position: absolute;
+    top: 0px;
+    left: 10px;
+    font-size: 26px;
+}
+textarea {
+    resize: none;
+}
+.jsoneditor-wrap {
+    min-height: 300px;
+    height: 300px;
+    margin: 1rem auto;
+}
+.faker {
+    margin: 1rem auto;
+}
+.faker-divider {
+    border: 1px solid;
+    margin: 1rem auto;
+}
 .package-header {
     display: flex;
     justify-content: space-between;

@@ -1,0 +1,14 @@
+{
+    "hosts": {
+        "dev": "http://dev.apiasd",
+        "pre": "http://pre.com.cnasd",
+        "production": "asdasdasd"
+    },
+    "urls": {
+        "lcdev": "http://localhost",
+        "dev": "js.dev.comasda",
+        "pre": "js.pre.com",
+        "production": "js.comasda"
+    },
+    "project": "{{name}}asdasd"
+}

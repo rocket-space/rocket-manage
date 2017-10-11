@@ -11,13 +11,14 @@ const bodyParser = require('body-parser');
 var exphbs  = require('express-handlebars');
 const _ = require('lodash');
 const marked = require('marked');
+const cors = require('cors');
 
 module.exports = function (express, app, opts) {
 
     var packageFile = opts.packageFile;
     var buildFile = opts.buildEnvPath;
     var readme = path.resolve(opts.root, './readme.html');
-
+    var packageData = {};
     marked.setOptions({
         highlight: function (code) {
             return require('highlight.js').highlightAuto(code).value;
@@ -27,6 +28,8 @@ module.exports = function (express, app, opts) {
     app.engine('handlebars', exphbs());
     app.set('view engine', 'handlebars');
 
+    app.use(cors());
+
     app.use(express.static('public'));
 
     app.use(bodyParser.urlencoded({
@@ -34,7 +37,7 @@ module.exports = function (express, app, opts) {
     }));
     app.use(bodyParser.json());
 
-    app.get('/', function (req, res) {
+    app.get('/index', function (req, res) {
         var fileContent;
         try {
             fileContent = fs.readFileSync(opts.projectDescription, 'utf8');
@@ -44,18 +47,79 @@ module.exports = function (express, app, opts) {
             throw new Error(e);
         }
 
-        res.render('index');
+        res.json({
+            data: {
+                code: 0,
+                msg: ''
+            }
+        })
     });
 
-    app.get('/getReadme', function (req, res) {
+    app.get('/project/getReadme', function (req, res) {
         res.sendFile(readme);
     })
+    function getPackageData(res) {
+        try {
+            var packageContent = fs.readFileSync(packageFile).toString();
+            //console.log(packageContent);
+            var packJson = JSON.parse(packageContent);
+            var object = {};
+            Object.keys(packJson.devDependencies).forEach(function (current) {
+                object[current] = [packJson.devDependencies[current]];
+            });
+            Object.keys(packJson.dependencies).forEach(function (current) {
+                object[current] =  [packJson.dependencies[current]];
+            });
 
-    app.get('/upgrade', function (req, res) {
+            ncu.run({
+                packageFile: packageFile,
+                silent: true,
+                jsonUpgraded: true
+            }).then((upgraded) => {
+                // console.log('dependencies to upgrade:', upgraded);
+                Object.keys(upgraded).forEach(function (current) {
+                    var pack = object[current];
+                    if (pack != null) {
+                        pack.push(upgraded[current]);
+                    }
+                });
+                var array = [];
+                Object.keys(object).forEach(function (current) {
+                    var obj = {};
+                    obj[current] = object[current];
+                    array.push(obj);
+                })
+                array.sort(function (a,b) {
+                    var aa = Object.keys(a)[0];
+                    var bb = Object.keys(b)[0];
+                    if (aa > bb) {
+                        return 1;
+                    } else if (aa < bb) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                });
+                var retObj = {};
+                array.forEach(function (current) {
+                    var key = Object.keys(current)[0];
+                    var value = current[key];
+                    retObj[key] = value;
+                })
+               // return retObj;
+               // packageData = retObj;
+                res.json(retObj);
+            });
+        }catch(e) {
+            throw new Error(e);
+        }
+    }
+    app.post('/package/upgrade', function (req, res) {
+        console.log(req.body.packs);
         try {
             ncu.run({
                 packageFile: packageFile,
-                filter: req.query.packs,
+                filter: req.body.packs,
                 upgrade: true,
                 silent: true
             }).then((upgraded) => {
@@ -70,7 +134,7 @@ module.exports = function (express, app, opts) {
         }
     });
 
-    app.post('/updateConfig', function (req, res) {
+    app.post('/config/updateConfig', function (req, res) {
         var projectInfo = fs.readFileSync(buildFile, {encoding: "utf-8"});
         var json = JSON.parse(projectInfo);
         if (!_.isEmpty(req.body.project) && _.trim(req.body.project) != "") {
@@ -107,7 +171,7 @@ module.exports = function (express, app, opts) {
         })
     });
 
-    app.get('/getConfig', function (req, res) {
+    app.get('/config/getConfig', function (req, res) {
         try {
             var projectInfo = fs.readFileSync(buildFile, {encoding: "utf-8"});
             var json = JSON.parse(projectInfo);
@@ -130,7 +194,7 @@ module.exports = function (express, app, opts) {
         }
     });
 
-    app.get('/getPackage', function (req, res) {
+    app.get('/package/getPackage', function (req, res) {
         try {
             var packageContent = fs.readFileSync(packageFile).toString();
             //console.log(packageContent);
@@ -150,36 +214,37 @@ module.exports = function (express, app, opts) {
             }).then((upgraded) => {
                 // console.log('dependencies to upgrade:', upgraded);
                 Object.keys(upgraded).forEach(function (current) {
-                var pack = object[current];
-                if (pack != null) {
-                    pack.push(upgraded[current]);
-                }
+                    var pack = object[current];
+                    if (pack != null) {
+                        pack.push(upgraded[current]);
+                    }
+                });
+                var array = [];
+                Object.keys(object).forEach(function (current) {
+                    var obj = {};
+                    obj[current] = object[current];
+                    array.push(obj);
+                })
+                array.sort(function (a,b) {
+                    var aa = Object.keys(a)[0];
+                    var bb = Object.keys(b)[0];
+                    if (aa > bb) {
+                        return 1;
+                    } else if (aa < bb) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                });
+                var retObj = {};
+                array.forEach(function (current) {
+                    var key = Object.keys(current)[0];
+                    var value = current[key];
+                    retObj[key] = value;
+                })
+
+                res.json(retObj);
             });
-            var array = [];
-            Object.keys(object).forEach(function (current) {
-                var obj = {};
-                obj[current] = object[current];
-                array.push(obj);
-            })
-            array.sort(function (a,b) {
-                var aa = Object.keys(a)[0];
-                var bb = Object.keys(b)[0];
-                if (aa > bb) {
-                    return 1;
-                } else if (aa < bb) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            });
-            var retObj = {};
-            array.forEach(function (current) {
-                var key = Object.keys(current)[0];
-                var value = current[key];
-                retObj[key] = value;
-            })
-            res.json(retObj);
-        });
         }catch(e) {
             throw new Error(e);
         }
