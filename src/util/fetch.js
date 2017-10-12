@@ -4,8 +4,7 @@ import httpConfig from '../config/http.config.js';
 import pleaseWaitMe from 'utils/pleaseWaitMe.js';
 
 let fetch = axios.create({
-    timeout: 30000,
-    baseURL: httpConfig[process.env]
+    timeout: 30000
 });
 
 fetch.interceptors.request.use((config)=>{

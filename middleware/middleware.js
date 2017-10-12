@@ -7,8 +7,8 @@
 const path = require('path');
 const ncu = require('npm-check-updates');
 const fs = require('fs');
+const ejs = require('ejs');
 const bodyParser = require('body-parser');
-var exphbs  = require('express-handlebars');
 const _ = require('lodash');
 const marked = require('marked');
 const cors = require('cors');
@@ -24,13 +24,14 @@ module.exports = function (express, app, opts) {
             return require('highlight.js').highlightAuto(code).value;
         }
     });
+    app.set('views', path.join(__dirname, '../dist'));
+    app.engine('html', ejs.renderFile);
+    app.set('view engine', 'html');
 
-    app.engine('handlebars', exphbs());
-    app.set('view engine', 'handlebars');
 
     app.use(cors());
 
-    app.use(express.static('public'));
+    app.use(express.static('dist'));
 
     app.use(bodyParser.urlencoded({
         extended: false
@@ -58,62 +59,6 @@ module.exports = function (express, app, opts) {
     app.get('/project/getReadme', function (req, res) {
         res.sendFile(readme);
     })
-    function getPackageData(res) {
-        try {
-            var packageContent = fs.readFileSync(packageFile).toString();
-            //console.log(packageContent);
-            var packJson = JSON.parse(packageContent);
-            var object = {};
-            Object.keys(packJson.devDependencies).forEach(function (current) {
-                object[current] = [packJson.devDependencies[current]];
-            });
-            Object.keys(packJson.dependencies).forEach(function (current) {
-                object[current] =  [packJson.dependencies[current]];
-            });
-
-            ncu.run({
-                packageFile: packageFile,
-                silent: true,
-                jsonUpgraded: true
-            }).then((upgraded) => {
-                // console.log('dependencies to upgrade:', upgraded);
-                Object.keys(upgraded).forEach(function (current) {
-                    var pack = object[current];
-                    if (pack != null) {
-                        pack.push(upgraded[current]);
-                    }
-                });
-                var array = [];
-                Object.keys(object).forEach(function (current) {
-                    var obj = {};
-                    obj[current] = object[current];
-                    array.push(obj);
-                })
-                array.sort(function (a,b) {
-                    var aa = Object.keys(a)[0];
-                    var bb = Object.keys(b)[0];
-                    if (aa > bb) {
-                        return 1;
-                    } else if (aa < bb) {
-                        return -1;
-                    } else {
-                        return 0;
-                    }
-                });
-                var retObj = {};
-                array.forEach(function (current) {
-                    var key = Object.keys(current)[0];
-                    var value = current[key];
-                    retObj[key] = value;
-                })
-               // return retObj;
-               // packageData = retObj;
-                res.json(retObj);
-            });
-        }catch(e) {
-            throw new Error(e);
-        }
-    }
     app.post('/package/upgrade', function (req, res) {
         console.log(req.body.packs);
         try {

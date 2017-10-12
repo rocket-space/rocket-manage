@@ -140,7 +140,7 @@ export default {
 	        fakerData: {
 
             },
-	        serverPath: serverPath + 'project/getReadme',
+	        serverPath: '/project/getReadme',
             pkg: {},
             config: {
                 project: '',
