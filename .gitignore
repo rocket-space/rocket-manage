@@ -12,7 +12,6 @@ node_modules/
 npm-debug.log
 
 # custom
-dist/
 npm-debug*
 
 stats.json
