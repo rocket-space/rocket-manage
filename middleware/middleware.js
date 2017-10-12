@@ -24,14 +24,11 @@ module.exports = function (express, app, opts) {
             return require('highlight.js').highlightAuto(code).value;
         }
     });
-    app.set('views', path.join(__dirname, '../dist'));
     app.engine('html', ejs.renderFile);
     app.set('view engine', 'html');
 
 
     app.use(cors());
-
-    app.use(express.static('dist'));
 
     app.use(bodyParser.urlencoded({
         extended: false

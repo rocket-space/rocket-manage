@@ -8,6 +8,9 @@ const express = require('express');
 const app = express();
 const middleWare = require('./middleware/middleware');
 
+app.set('views', path.join(__dirname, './dist'));
+app.use(express.static(path.join(__dirname, './dist')));
+
 middleWare(express, app, {
     root: __dirname,
     projectDescription: path.resolve(__dirname, './README.md'),
@@ -18,9 +21,9 @@ middleWare(express, app, {
 
 const server = http.createServer(app);
 
-server.listen(7071, (err) => {
+server.listen(7076, (err) => {
     if (err) {
         console.error(err);
     }
-    console.log(`The dev server is listening at http://localhost:${7071}/`);
+    console.log(`The dev server is listening at http://localhost:${7076}/`);
 });
