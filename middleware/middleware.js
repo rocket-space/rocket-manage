@@ -1,7 +1,6 @@
 /**
  *
  Created by zhangzhao on 2017/9/13.
- Email: zhangzhao@gomeplus.com
  */
 
 const path = require('path');
@@ -35,23 +34,14 @@ module.exports = function (express, app, opts) {
     }));
     app.use(bodyParser.json());
 
-    app.get('/index', function (req, res) {
-        var fileContent;
-        try {
-            fileContent = fs.readFileSync(opts.projectDescription, 'utf8');
-            fileContent = marked(fileContent);
-            fs.writeFileSync(readme, fileContent);
-        } catch (e) {
-            throw new Error(e);
-        }
-
-        res.json({
-            data: {
-                code: 0,
-                msg: ''
-            }
-        })
-    });
+    var fileContent;
+    try {
+        fileContent = fs.readFileSync(opts.projectDescription, 'utf8');
+        fileContent = marked(fileContent);
+        fs.writeFileSync(readme, fileContent);
+    } catch (e) {
+        throw new Error(e);
+    }
 
     app.get('/project/getReadme', function (req, res) {
         res.sendFile(readme);
