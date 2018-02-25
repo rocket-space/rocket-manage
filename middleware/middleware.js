@@ -115,9 +115,9 @@ module.exports = function (express, app, opts) {
                         devUrl: json.hosts.dev,
                         preUrl: json.hosts.pre,
                         prodUrl: json.hosts.production,
-                        devApi: json.urls.dev,
-                        preApi: json.urls.pre,
-                        prodApi: json.urls.production
+                        devApi: json.urls ? json.urls.dev : '',
+                        preApi: json.urls ? json.urls.pre : '',
+                        prodApi: json.urls ? json.urls.production : ''
                     }
                 }
             });
